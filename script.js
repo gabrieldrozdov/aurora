@@ -68,7 +68,7 @@ audio.addEventListener('click', toggleMute);
 let context = (window.AudioContext || window.webkitAudioContext) ?
 	new (window.AudioContext || window.webkitAudioContext)() : null;
 let allowBackgroundPlayback = true; // default false, recommended false
-let forceIOSBehavior = false; // default false, recommended false
+let forceIOSBehavior = true; // default false, recommended false
 let unmuteHandle;
 function toggleMute() {
 	audio.dataset.active = 0;
