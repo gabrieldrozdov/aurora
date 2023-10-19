@@ -155,6 +155,54 @@ body[data-active="0"] {
 	transition: background-color 10s;
 }
 
+/* Handshake */
+#handshake {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100dvh;
+	z-index: 999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	text-align: center;
+	color: white;
+	font-family: 'Limkin', sans-serif;
+	font-variation-settings: "wght" 100, "SRFF" 0;
+	cursor: pointer;
+	padding: 5vmin 5vmin calc(5vmin + 20px) 5vmin;
+	transition: opacity 1s, transform 1s, filter 1s;
+}
+@keyframes handshake-in {
+	from {
+		transform: scale(.8);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+#handshake h1 {
+	font-size: 12vmin;
+	text-shadow: 0 0 10px rgba(0,0,0,.2);
+	animation: handshake-in 1s forwards cubic-bezier(0.33, 1, 0.68, 1);
+}
+#handshake p {
+	font-size: 3vmin;
+	font-variation-settings: "wght" 300, "SRFF" 0;
+	text-shadow: 0 0 20px rgba(0,0,0,.4);
+	animation: handshake-in 1s forwards cubic-bezier(0.33, 1, 0.68, 1);
+}
+#handshake[data-active="0"] {
+	opacity: 0 !important;
+	transform: scale(.98);
+	filter: blur(2px);
+	pointer-events: none;
+}
+
 /* Audio controls */
 .audio {
 	position: absolute;
@@ -170,6 +218,9 @@ body[data-active="0"] {
 .audio[data-active="0"] {
 	opacity: .25;
 	pointer-events: none;
+}
+.audio[data-hide="1"] {
+	opacity: 0;
 }
 .audio svg {
 	width: 100%;
@@ -246,7 +297,7 @@ body[data-active="0"] {
     height: 80vmin;
     position: relative;
 	box-shadow: 0 0 100px rgba(0,0,0,.2);
-	transition: background-color 4s;
+	background: radial-gradient(transparent 60%, rgba(255,255,255,.5) 75%);
 }
 .clock[data-active="0"] .hand {
 	opacity: 0;
@@ -274,28 +325,6 @@ body[data-active="0"] {
 }
 .hand.second-hand {
     width: 45%;
-}
-.pulse {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	border: 20px solid white;
-	border-radius: 50%;
-	filter: blur(20px);
-	opacity: .8;
-}
-.pulse[data-active="1"] {
-	animation: pulse 1s infinite;
-}
-@keyframes pulse {
-	from {
-		opacity: 1;
-	}
-	to {
-		opacity: .8;
-	}
 }
 
 /* Digital hour display */
@@ -435,7 +464,7 @@ body[data-active="0"] {
 
 /* Audio players */
 audio {
-	display: none;
+	/* display: none; */
 }
 
 /* Mobile styles */

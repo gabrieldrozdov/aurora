@@ -3,7 +3,6 @@ const clock = document.querySelector(".clock")
 const secondHand = document.querySelector(".second-hand");
 const minsHand = document.querySelector(".min-hand");
 const hourHand = document.querySelector(".hour-hand");
-const pulse = document.querySelector('.pulse');
 const digital = document.querySelector('.digital');
 const audio = document.querySelector('.audio');
 const realtime = document.querySelector('.realtime');
@@ -39,11 +38,6 @@ function setTime() {
     const hour = now.getHours();
     const hourDegrees = ((hour / 12) * 360) + ((mins / 60) * 30) + 90;
     hourHand.style.transform = `rotate(${hourDegrees}deg)`;
-
-	pulse.dataset.active = 0;
-	setTimeout(() => {
-		pulse.dataset.active = 1;
-	}, 5)
 
 	let midday = 'am';
 	if (hour >= 12) {
@@ -93,6 +87,7 @@ function toggleMute() {
 
 // Transition between tracks (or start first track)
 function transitionSong() {
+	hideTime();
 	setActiveToggle();
 	audio.dataset.active = 0;
 	overrides.dataset.active = 0;
@@ -105,24 +100,30 @@ function transitionSong() {
 			if (intros.includes(time)) {
 				playIntro();
 			} else {
+				loaded = false;
 				playLoop();
 			}
-		}, 2000)
+		}, 2100)
 	} else {
 		songActive = true;
 		if (intros.includes(time)) {
 			playIntro();
 		} else {
+			loaded = false;
 			playLoop();
 		}
 	}
 }
 
 // Play music
+let loaded = false;
 function playLoop() {
 	console.log('loop');
 	audioLoop.volume = 1;
-	audioLoop.src = `assets/audio/${time}.mp3`;
+
+	if (!loaded) {
+		audioLoop.src = `assets/audio/${time}.mp3`;
+	}
 	audioLoop.play();
 	audio.dataset.active = 1;
 	overrides.dataset.active = 1;
@@ -135,12 +136,14 @@ function playIntro() {
 	console.log('intro');
 	activeIntro = true;
 	audioIntro.src = `assets/audio/${time}-intro.mp3`;
+	audioLoop.src = `assets/audio/${time}.mp3`;
+	loaded = true;
 	audioIntro.play();
 	audioIntro.addEventListener('timeupdate', introTransition);
 }
 function introTransition() {
 	if (activeIntro) {
-		var buffer = 0.2;
+		var buffer = .44;
 		if(audioIntro.currentTime > audioIntro.duration - buffer){
 			playLoop();
 			activeIntro = false;
@@ -151,6 +154,7 @@ function introTransition() {
 
 // Fade out and stop current loop
 function fadeAudio() {
+	console.log('fade');
 	let fade = setInterval(function () {
 		if (audioLoop.volume > 0) {
 			let temp = audioLoop.volume;
@@ -165,7 +169,7 @@ function fadeAudio() {
 	}, 200);
 }
 audioLoop.addEventListener('timeupdate', function () {
-	var buffer = 0.1;
+	var buffer = .44;
 	if(this.currentTime > this.duration - buffer){
 		this.currentTime = 0
 		this.play()
@@ -234,26 +238,39 @@ function resetClock() {
 }
 
 // Prevent phone from falling asleep with wake lock API
-let wakeLock = null;
-const requestWakeLock = async () => {
-	try {
-		wakeLock = await navigator.wakeLock.request();
-		wakeLock.addEventListener('release', () => {
-			console.log('Screen Wake Lock released:', wakeLock.released);
-		});
-		console.log('Screen Wake Lock released:', wakeLock.released);
-	} catch (err) {
-		console.error(`${err.name}, ${err.message}`);
-	}
-};
-requestWakeLock();
+// let wakeLock = null;
+// const requestWakeLock = async () => {
+// 	try {
+// 		wakeLock = await navigator.wakeLock.request();
+// 		wakeLock.addEventListener('release', () => {
+// 			console.log('Screen Wake Lock released:', wakeLock.released);
+// 		});
+// 		console.log('Screen Wake Lock released:', wakeLock.released);
+// 	} catch (err) {
+// 		console.error(`${err.name}, ${err.message}`);
+// 	}
+// };
+// requestWakeLock();
 
-// Detect if tab is navigated away from
-document.addEventListener("visibilitychange", (event) => {
-	if (document.visibilityState == "visible") {
-		requestWakeLock();
-	} else {
-		wakeLock.release();
-		wakeLock = null;
-	}
-});
+// // Detect if tab is navigated away from
+// document.addEventListener("visibilitychange", (event) => {
+// 	if (document.visibilityState == "visible") {
+// 		requestWakeLock();
+// 	} else {
+// 		wakeLock.release();
+// 		wakeLock = null;
+// 	}
+// });
+
+// Intro handshake
+const handshake = document.querySelector("#handshake");
+const dummy = document.querySelector("#dummy");
+function initialize() {
+	dummy.play();
+	toggleMute();
+	audio.dataset.hide = 0;
+	handshake.dataset.active = 0;
+	clock.dataset.active = 1;
+	// overrides.dataset.active = 1;
+}
+handshake.addEventListener('click', initialize);
