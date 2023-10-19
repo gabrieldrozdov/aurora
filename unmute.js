@@ -232,7 +232,7 @@ function unmute(context, allowBackgroundPlayback, forceIOSBehavior) {
         // This is an opportunity to resume the context if paused
         updateContextState();
     }
-    // addEventListeners(window, mediaPlaybackEvents, win_mediaPlaybackEvent, true, true);
+    addEventListeners(window, mediaPlaybackEvents, win_mediaPlaybackEvent, true, true);
     //#endregion
     return {
         /**

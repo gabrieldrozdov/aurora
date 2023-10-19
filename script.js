@@ -63,26 +63,13 @@ function setTime() {
 setTime();
 setInterval(setTime, 1000);
 
-// unmute.js
-// Create an audio context instance if WebAudio is supported
-let context = (window.AudioContext || window.webkitAudioContext) ?
-	new (window.AudioContext || window.webkitAudioContext)() : null;
-
-// Decide on some parameters
-let allowBackgroundPlayback = true; // default false, recommended false
-let forceIOSBehavior = true; // default false, recommended false
-let unmuteHandle;
-// Pass it to unmute if the context exists... ie WebAudio is supported
-if (context) {
-	console.log(1)
-	// If you need to be able to disable unmute at a later time, you can use the returned handle's dispose() method
-	// if you don't need to do that (most folks won't) then you can simply ignore the return value
-	
-	// ... at some later point you wish to STOP unmute control
-}
-
 // Mute controls
 audio.addEventListener('click', toggleMute);
+let context = (window.AudioContext || window.webkitAudioContext) ?
+	new (window.AudioContext || window.webkitAudioContext)() : null;
+let allowBackgroundPlayback = true; // default false, recommended false
+let forceIOSBehavior = false; // default false, recommended false
+let unmuteHandle;
 function toggleMute() {
 	audio.dataset.active = 0;
 	overrides.dataset.active = 0;
