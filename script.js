@@ -296,14 +296,13 @@ function unlock() {
     tag.preload = "auto";
     tag.loop = false;
     tag.src = silenceDataURL;
-    tag.onended = function()
-    {
+    tag.onended = function() {
         console.log("HTMLAudio unlocked!");
         isHTMLAudioUnlocked = true;
-        if (isWebAudioUnlocked && isHTMLAudioUnlocked)
-        {
+        if (isWebAudioUnlocked && isHTMLAudioUnlocked) {
             console.log("WebAudio unlocked and playable w/ mute toggled on!");
             window.removeEventListener("mousedown", unlock);
+            window.removeEventListener("touchstart", unlock);
         }
     };
     let p = tag.play();
@@ -311,4 +310,4 @@ function unlock() {
 }
 
 window.addEventListener("mousedown", unlock);
-window.addEventListener("touchstart", unlock);
+window.addEventListener("click", unlock);
