@@ -65,11 +65,6 @@ setInterval(setTime, 1000);
 
 // Mute controls
 audio.addEventListener('click', toggleMute);
-// let allowBackgroundPlayback = true; // default false, recommended false
-// let forceIOSBehavior = true; // default false, recommended false
-// let unmuteHandle;
-const soundEffect = new Audio();
-soundEffect.autoplay = true;
 function toggleMute() {
 	audio.dataset.active = 0;
 	overrides.dataset.active = 0;
@@ -86,18 +81,11 @@ function toggleMute() {
 			if (override) {
 				realtime.dataset.active = 1;
 			}
-			// if (unmuteHandle != null) {
-			// 	unmuteHandle.dispose();
-			// 	unmuteHandle = null;
-			// }
 		}, 1000)
 	} else {
 		Tone.start();
 		audio.dataset.mute = 1;
 		mute = false;
-		// if (context) {
-		// 	unmuteHandle = unmute(context, allowBackgroundPlayback, forceIOSBehavior);
-		// }
 	}
 }
 
@@ -224,8 +212,6 @@ function resetClock() {
 
 // Prevent phone from falling asleep with wake lock API
 let wakeLock = null;
-
-// Function that attempts to request a screen wake lock.
 const requestWakeLock = async () => {
 	try {
 		wakeLock = await navigator.wakeLock.request();
@@ -237,77 +223,14 @@ const requestWakeLock = async () => {
 		console.error(`${err.name}, ${err.message}`);
 	}
 };
-
-// Request a screen wake lock…
 requestWakeLock();
-// …and release it again after 5s.
-// window.setTimeout(() => {
-// 	wakeLock.release();
-// 	wakeLock = null;
-// }, 5000);
 
 // Detect if tab is navigated away from
 document.addEventListener("visibilitychange", (event) => {
 	if (document.visibilityState == "visible") {
-		console.log("tab is active")
+		requestWakeLock();
 	} else {
-		console.log("tab is inactive")
+		wakeLock.release();
+		wakeLock = null;
 	}
 });
-
-/**
- * PLEASE DONT USE THIS AS IT IS, THIS IS JUST EXAMPLE CODE.
- * If you want a drop in solution I have a script on git hub
- * Demo:
- * @see https://spencer-evans.com/share/github/unmute/
- * Github Repo:
- * @see https://github.com/swevans/unmute
- */
-let context = (window.AudioContext || window.webkitAudioContext) ? new (window.AudioContext || window.webkitAudioContext)() : null;
-let isWebAudioUnlocked = false;
-let isHTMLAudioUnlocked = false;
-
-function unlock() {
-    if (isWebAudioUnlocked  && isHTMLAudioUnlocked) return;
-
-    // Unlock WebAudio - create short silent buffer and play it
-    // This will allow us to play web audio at any time in the app
-    let buffer = context.createBuffer(1, 1, 22050); // 1/10th of a second of silence
-    let source = context.createBufferSource();
-    source.buffer = buffer;
-    source.connect(context.destination);
-    source.onended = function()
-    {
-        console.log("WebAudio unlocked!");
-        isWebAudioUnlocked = true;
-        if (isWebAudioUnlocked && isHTMLAudioUnlocked)
-        {
-            console.log("WebAudio unlocked and playable w/ mute toggled on!");
-            window.removeEventListener("mousedown", unlock);
-        }
-    };
-    source.start();
-
-    // Unlock HTML5 Audio - load a data url of short silence and play it
-    // This will allow us to play web audio when the mute toggle is on
-    let silenceDataURL = "data:audio/mp3;base64,//MkxAAHiAICWABElBeKPL/RANb2w+yiT1g/gTok//lP/W/l3h8QO/OCdCqCW2Cw//MkxAQHkAIWUAhEmAQXWUOFW2dxPu//9mr60ElY5sseQ+xxesmHKtZr7bsqqX2L//MkxAgFwAYiQAhEAC2hq22d3///9FTV6tA36JdgBJoOGgc+7qvqej5Zu7/7uI9l//MkxBQHAAYi8AhEAO193vt9KGOq+6qcT7hhfN5FTInmwk8RkqKImTM55pRQHQSq//MkxBsGkgoIAABHhTACIJLf99nVI///yuW1uBqWfEu7CgNPWGpUadBmZ////4sL//MkxCMHMAH9iABEmAsKioqKigsLCwtVTEFNRTMuOTkuNVVVVVVVVVVVVVVVVVVV//MkxCkECAUYCAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
-    let tag = document.createElement("audio");
-    tag.controls = false;
-    tag.preload = "auto";
-    tag.loop = false;
-    tag.src = silenceDataURL;
-    tag.onended = function() {
-        console.log("HTMLAudio unlocked!");
-        isHTMLAudioUnlocked = true;
-        if (isWebAudioUnlocked && isHTMLAudioUnlocked) {
-            console.log("WebAudio unlocked and playable w/ mute toggled on!");
-            window.removeEventListener("mousedown", unlock);
-            window.removeEventListener("touchstart", unlock);
-        }
-    };
-    let p = tag.play();
-    if (p) p.then(function(){console.log("play success")}, function(reason){console.log("play failed", reason)});
-}
-
-// window.addEventListener("mousedown", unlock);
-window.addEventListener("click", unlock);
