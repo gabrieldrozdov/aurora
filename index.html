@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Aurora</title>
+	<link rel="icon" type="image/png" href="/assets/meta/5pm.png"/>
+	<meta name="author" content="Gabriel Drozdov">
+	<meta name="keywords" content="Web Design, Web Art, Soundtrack, Realtime, Music, OST, Time">
+	<meta name="description" content="Music to mark the passage of time.">
+	<meta property="og:url" content="https://aurora.noreplica.com/">
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="Aurora">
+	<meta property="og:description" content="Music to mark the passage of time.">
+	<meta property="og:image" content="/assets/meta/opengraph.jpg">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+</head>
+<body>
+	<main class="container">
+		<div class="gradient"></div>
+
+		<div class="audio" data-mute="0">
+			<svg id="mute" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 7.358v15.642l-8-5v-.785l8-9.857zm3-6.094l-1.548-1.264-3.446 4.247-6.006 3.753v3.646l-2 2.464v-6.11h-4v10h.843l-3.843 4.736 1.548 1.264 18.452-22.736z"/></svg>
+			<svg id="unmute" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 7l8-5v20l-8-5v-10zm-6 10h4v-10h-4v10zm20.264-13.264l-1.497 1.497c1.847 1.783 2.983 4.157 2.983 6.767 0 2.61-1.135 4.984-2.983 6.766l1.498 1.498c2.305-2.153 3.735-5.055 3.735-8.264s-1.43-6.11-3.736-8.264zm-.489 8.264c0-2.084-.915-3.967-2.384-5.391l-1.503 1.503c1.011 1.049 1.637 2.401 1.637 3.888 0 1.488-.623 2.841-1.634 3.891l1.503 1.503c1.468-1.424 2.381-3.309 2.381-5.394z"/></svg>
+		</div>
+
+		<div class="realtime" data-active="0">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm7 14h-8v-9h2v7h6v2z"/></svg>
+		</div>
+
+		<div class="clock-container">
+			<div class="clock">
+				<div class="digital">12am</div>
+				<div class="pulse"></div>
+				<div class="hand hour-hand"></div>
+				<div class="hand min-hand"></div>
+				<div class="hand second-hand"></div>
+			</div>
+		</div>
+
+		<div class="overrides">
+			<div data-time="12am"></div>
+			<div data-time="1am"></div>
+			<div data-time="2am"></div>
+			<div data-time="3am"></div>
+			<div data-time="4am"></div>
+			<div data-time="5am"></div>
+			<div data-time="6am"></div>
+			<div data-time="7am"></div>
+			<div data-time="8am"></div>
+			<div data-time="9am"></div>
+			<div data-time="10am"></div>
+			<div data-time="11am"></div>
+			<div data-time="12pm"></div>
+			<div data-time="1pm"></div>
+			<div data-time="2pm"></div>
+			<div data-time="3pm"></div>
+			<div data-time="4pm"></div>
+			<div data-time="5pm"></div>
+			<div data-time="6pm"></div>
+			<div data-time="7pm"></div>
+			<div data-time="8pm"></div>
+			<div data-time="9pm"></div>
+			<div data-time="10pm"></div>
+			<div data-time="11pm"></div>
+		</div>
+	</main>
+
+	<script src="script.js"></script>
+</body>
+</html>

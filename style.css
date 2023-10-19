@@ -1,0 +1,472 @@
+@font-face {
+	font-family: "Limkin";
+	src: url('assets/fonts/limkin.ttf');
+}
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+:root {
+	--12am: #071d59;
+	--1am: #002b6c;
+	--2am: #003a73;
+	--3am: #004278;
+	--4am: #004c85;
+	--5am: #006594;
+	--6am: #0071a0;
+	--7am: #0071a0;
+	--8am: #41d5ca;
+	--9am: #92f0d8;
+	--10am: #cbffba;
+	--11am: #fcff9e;
+	--12pm: #ffe878;
+	--1pm: #ffc742;
+	--2pm: #ff9e2e;
+	--3pm: #ff8f33;
+	--4pm: #ff794d;
+	--5pm: #ff6262;
+	--6pm: #d85283;
+	--7pm: #a33e94;
+	--8pm: #652888;
+	--9pm: #3e187e;
+	--10pm: #2c146e;
+	--11pm: #101857;
+}
+body[data-time="12am"] {
+	--primary: var(--12am);
+	--secondary: var(--1am);
+}
+body[data-time="1am"] {
+	--primary: var(--1am);
+	--secondary: var(--2am);
+}
+body[data-time="2am"] {
+	--primary: var(--2am);
+	--secondary: var(--3am);
+}
+body[data-time="3am"] {
+	--primary: var(--3am);
+	--secondary: var(--4am);
+}
+body[data-time="4am"] {
+	--primary: var(--4am);
+	--secondary: var(--5am);
+}
+body[data-time="5am"] {
+	--primary: var(--5am);
+	--secondary: var(--6am);
+}
+body[data-time="6am"] {
+	--primary: var(--6am);
+	--secondary: var(--7am);
+}
+body[data-time="7am"] {
+	--primary: var(--7am);
+	--secondary: var(--8am);
+}
+body[data-time="8am"] {
+	--primary: var(--8am);
+	--secondary: var(--9am);
+}
+body[data-time="9am"] {
+	--primary: var(--9am);
+	--secondary: var(--10am);
+}
+body[data-time="10am"] {
+	--primary: var(--10am);
+	--secondary: var(--11am);
+}
+body[data-time="11am"] {
+	--primary: var(--11am);
+	--secondary: var(--12pm);
+}
+body[data-time="12pm"] {
+	--primary: var(--12pm);
+	--secondary: var(--1pm);
+}
+body[data-time="1pm"] {
+	--primary: var(--1pm);
+	--secondary: var(--2pm);
+}
+body[data-time="2pm"] {
+	--primary: var(--2pm);
+	--secondary: var(--3pm);
+}
+body[data-time="3pm"] {
+	--primary: var(--3pm);
+	--secondary: var(--4pm);
+}
+body[data-time="4pm"] {
+	--primary: var(--4pm);
+	--secondary: var(--5pm);
+}
+body[data-time="5pm"] {
+	--primary: var(--5pm);
+	--secondary: var(--6pm);
+}
+body[data-time="6pm"] {
+	--primary: var(--6pm);
+	--secondary: var(--7pm);
+}
+body[data-time="7pm"] {
+	--primary: var(--7pm);
+	--secondary: var(--8pm);
+}
+body[data-time="8pm"] {
+	--primary: var(--8pm);
+	--secondary: var(--9pm);
+}
+body[data-time="9pm"] {
+	--primary: var(--9pm);
+	--secondary: var(--10pm);
+}
+body[data-time="10pm"] {
+	--primary: var(--10pm);
+	--secondary: var(--11pm);
+}
+body[data-time="11pm"] {
+	--primary: var(--11pm);
+	--secondary: var(--12am);
+}
+body {
+	background-color: var(--primary);
+	transition: background-color 3s;
+	--primary: var(--12am);
+	--secondary: var(--1am);
+}
+body[data-active="0"] {
+	pointer-events: none;
+}
+.container {
+	width: 100vw;
+	height: 100dvh;
+}
+.gradient {
+	background-color: var(--secondary);
+	width: 100vw;
+	height: 100dvh;
+	z-index: -1;
+	position: fixed;
+	top: 0;
+	left: 0;
+	mask-image: linear-gradient(black, transparent);
+	-webkit-mask-image: linear-gradient(black, transparent);
+	transition: background-color 10s;
+}
+
+/* Audio controls */
+.audio {
+	position: absolute;
+	top: 20px;
+	right: 15px;
+	width: 40px;
+	fill: white;
+	cursor: pointer;
+	z-index: 99;
+	transition: .2s;
+	filter: drop-shadow(0 0 10px rgba(0,0,0,.3));
+}
+.audio[data-active="0"] {
+	opacity: .25;
+	pointer-events: none;
+}
+.audio svg {
+	width: 100%;
+}
+.audio:hover {
+	opacity: .5;
+}
+.audio:active {
+	opacity: .25;
+}
+.audio[data-mute="0"] #unmute {
+	display: none;
+}
+.audio[data-mute="1"] #mute {
+	display: none;
+}
+
+/* Return to realtime */
+.realtime {
+	position: absolute;
+	top: 60px;
+	right: 15px;
+	width: 40px;
+	fill: white;
+	cursor: pointer;
+	z-index: 99;
+	transition: .2s;
+	filter: drop-shadow(0 0 10px rgba(0,0,0,.15));
+}
+.realtime svg {
+	width: 100%;
+}
+.realtime:hover {
+	opacity: .5;
+}
+.realtime:active {
+	opacity: .25;
+}
+.realtime[data-disabled="1"] {
+	opacity: 0.25;
+	pointer-events: none;
+}
+.realtime[data-active="0"] {
+	opacity: 0;
+	pointer-events: none;
+}
+
+/* Clock */
+.clock-container {
+	width: 100%;
+	height: 100%;
+	padding-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+	transform: scale(0);
+	animation: clock-in 1s forwards cubic-bezier(0.33, 1, 0.68, 1);
+}
+@keyframes clock-in {
+	from {
+		transform: scale(.8);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+.clock {
+	overflow: hidden;
+    border-radius: 50%;
+    width: 80vmin;
+    height: 80vmin;
+    position: relative;
+	box-shadow: 0 0 100px rgba(0,0,0,.2);
+	transition: background-color 4s;
+}
+.clock[data-active="0"] .hand {
+	opacity: 0;
+}
+.hand {
+    width: 50%;
+    right: 50%;
+    height: 2px;
+    background-color: white;
+	box-shadow: 0 0 10px rgba(0,0,0,.2);
+	border-radius: 2px;
+    position: absolute;
+    top: 50%;
+    transform-origin: 100%;
+    transform: rotate(90deg);
+	transition: opacity .5s;
+}
+.hand.hour-hand {
+    width: 20%;
+    z-index: 3;
+}
+.hand.min-hand {
+    z-index: 10;
+    width: 35%;
+}
+.hand.second-hand {
+    width: 45%;
+}
+.pulse {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: 20px solid white;
+	border-radius: 50%;
+	filter: blur(20px);
+	opacity: .8;
+}
+.pulse[data-active="1"] {
+	animation: pulse 1s infinite;
+}
+@keyframes pulse {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: .8;
+	}
+}
+
+/* Digital hour display */
+.digital {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-family: "Limkin", sans-serif;
+	font-variation-settings: "wght" 100, "SRFF" 0;
+	font-size: 25vmin;
+	color: white;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	z-index: 99;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity .5s;
+	text-shadow: 0 0 10px rgba(0,0,0,.2);
+}
+.digital[data-active="1"] {
+	opacity: 1;
+}
+
+/* Overrides */
+.overrides {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	align-items: end;
+	height: 20px;
+	transition: opacity 1s, height 1s, width 1s;
+	box-shadow: 0 0 10px rgba(0,0,0,.1);
+}
+.overrides:hover {
+	height: 40px;
+}
+.overrides[data-active="0"] {
+	height: 10px;
+	opacity: .2;
+	pointer-events: none;
+}
+.overrides div {
+	flex-grow: 1;
+	height: 100%;
+	transition: height .2s, width .2s, flex-grow 1s;
+	cursor: pointer;
+	box-shadow: 0 40px 50px rgba(0,0,0,.5);
+}
+.overrides div[data-active="1"] {
+	flex-grow: 4;
+}
+.overrides div:hover {
+	height: 150%;
+}
+.overrides div:active {
+	height: 200%;
+}
+.overrides div[data-time="12am"] {
+	background-color: var(--12am);
+}
+.overrides div[data-time="1am"] {
+	background-color: var(--1am);
+}
+.overrides div[data-time="2am"] {
+	background-color: var(--2am);
+}
+.overrides div[data-time="3am"] {
+	background-color: var(--3am);
+}
+.overrides div[data-time="4am"] {
+	background-color: var(--4am);
+}
+.overrides div[data-time="5am"] {
+	background-color: var(--5am);
+}
+.overrides div[data-time="6am"] {
+	background-color: var(--6am);
+}
+.overrides div[data-time="7am"] {
+	background-color: var(--7am);
+}
+.overrides div[data-time="8am"] {
+	background-color: var(--8am);
+}
+.overrides div[data-time="9am"] {
+	background-color: var(--9am);
+}
+.overrides div[data-time="10am"] {
+	background-color: var(--10am);
+}
+.overrides div[data-time="11am"] {
+	background-color: var(--11am);
+}
+.overrides div[data-time="12pm"] {
+	background-color: var(--12pm);
+}
+.overrides div[data-time="1pm"] {
+	background-color: var(--1pm);
+}
+.overrides div[data-time="2pm"] {
+	background-color: var(--2pm);
+}
+.overrides div[data-time="3pm"] {
+	background-color: var(--3pm);
+}
+.overrides div[data-time="4pm"] {
+	background-color: var(--4pm);
+}
+.overrides div[data-time="5pm"] {
+	background-color: var(--5pm);
+}
+.overrides div[data-time="6pm"] {
+	background-color: var(--6pm);
+}
+.overrides div[data-time="7pm"] {
+	background-color: var(--7pm);
+}
+.overrides div[data-time="8pm"] {
+	background-color: var(--8pm);
+}
+.overrides div[data-time="9pm"] {
+	background-color: var(--9pm);
+}
+.overrides div[data-time="10pm"] {
+	background-color: var(--10pm);
+}
+.overrides div[data-time="11pm"] {
+	background-color: var(--11pm);
+}
+
+/* Mobile styles */
+@media only screen and (max-width: 600px) {
+	.clock-container {
+		padding-left: 20px;
+		padding-bottom: unset;
+	}
+	.overrides {
+		top: 0;
+		left: 0;
+		right: unset;
+		bottom: 0;
+		height: unset;
+		width: 20px;
+		flex-direction: column;
+		align-items: start;
+	}
+	.overrides:hover {
+		width: 40px;
+		height: unset;
+	}
+	.overrides[data-active="0"] {
+		height: unset;
+		width: 10px;
+	}
+	.overrides div {
+		width: 100%;
+		height: unset;
+	}
+	.overrides div:hover {
+		width: 150%;
+		height: unset;
+	}
+	.overrides div:active {
+		width: 200%;
+		height: unset;
+	}
+}
