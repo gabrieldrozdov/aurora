@@ -14,7 +14,13 @@ const audioLoop = document.querySelector("#loop");
 /* Clock */
 let hourChange = true;
 let songActive = false;
-let time = '5pm';
+let time = `${Math.floor(Math.random()*12+1)}`;
+if (Math.random() < .5) {
+	time = time+"am";
+} else {
+	time = time+"pm";
+}
+body.dataset.time = time;
 let intros = ['9am','12pm','3pm','5pm','10pm'];
 let music, intro;
 let mute = true;
@@ -57,7 +63,6 @@ function setTime() {
 		setActiveToggle();
 	}
 }
-setTime();
 setInterval(setTime, 1000);
 
 // Mute controls

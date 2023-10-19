@@ -6,6 +6,7 @@
 	box-sizing: border-box;
 	padding: 0;
 	margin: 0;
+	text-rendering: optimizeLegibility;
 }
 :root {
 	--12am: #071d59;
@@ -132,8 +133,8 @@ body[data-time="11pm"] {
 body {
 	background-color: var(--primary);
 	transition: background-color 3s;
-	--primary: var(--12am);
-	--secondary: var(--1am);
+	--primary: black;
+	--secondary: white;
 }
 body[data-active="0"] {
 	pointer-events: none;
@@ -172,7 +173,7 @@ body[data-active="0"] {
 	font-family: 'Limkin', sans-serif;
 	font-variation-settings: "wght" 100, "SRFF" 0;
 	cursor: pointer;
-	padding: 5vmin 5vmin calc(5vmin + 20px) 5vmin;
+	padding: 5vmin 5vmin calc(6vmin + 20px) 5vmin;
 	transition: opacity 1s, transform 1s, filter 1s;
 }
 @keyframes handshake-in {
@@ -188,13 +189,21 @@ body[data-active="0"] {
 #handshake h1 {
 	font-size: 12vmin;
 	text-shadow: 0 0 10px rgba(0,0,0,.2);
+	transition: filter .5s;
 	animation: handshake-in 1s forwards cubic-bezier(0.33, 1, 0.68, 1);
+}
+#handshake h1:hover {
+	filter: blur(5px);
 }
 #handshake p {
 	font-size: 3vmin;
 	font-variation-settings: "wght" 300, "SRFF" 0;
 	text-shadow: 0 0 20px rgba(0,0,0,.4);
+	transition: filter .5s;
 	animation: handshake-in 1s forwards cubic-bezier(0.33, 1, 0.68, 1);
+}
+#handshake p:hover {
+	filter: blur(5px);
 }
 #handshake[data-active="0"] {
 	opacity: 0 !important;
@@ -462,13 +471,11 @@ body[data-active="0"] {
 	background-color: var(--11pm);
 }
 
-/* Audio players */
-audio {
-	/* display: none; */
-}
-
 /* Mobile styles */
 @media only screen and (max-width: 600px) {
+	#handshake {
+		padding: 5vmin 5vmin 6vmin calc(5vmin + 20px);
+	}
 	.clock-container {
 		padding-left: 20px;
 		padding-bottom: unset;
