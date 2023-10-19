@@ -433,6 +433,11 @@ body[data-active="0"] {
 	background-color: var(--11pm);
 }
 
+/* Audio players */
+audio {
+	display: none;
+}
+
 /* Mobile styles */
 @media only screen and (max-width: 600px) {
 	.clock-container {

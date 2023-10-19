@@ -1,4 +1,3 @@
-/* Clock */
 const body = document.querySelector('body');
 const clock = document.querySelector(".clock")
 const secondHand = document.querySelector(".second-hand");
@@ -10,6 +9,10 @@ const audio = document.querySelector('.audio');
 const realtime = document.querySelector('.realtime');
 const overrides = document.querySelector('.overrides');
 const favicon = document.querySelector("link[rel~='icon']");
+const audioIntro = document.querySelector("#intro");
+const audioLoop = document.querySelector("#loop");
+
+/* Clock */
 let hourChange = true;
 let songActive = false;
 let time = '5pm';
@@ -43,7 +46,7 @@ function setTime() {
 	}, 5)
 
 	let midday = 'am';
-	if (hour > 12) {
+	if (hour >= 12) {
 		midday = 'pm';
 	}
 	body.dataset.time = time;
@@ -70,7 +73,7 @@ function toggleMute() {
 	overrides.dataset.active = 0;
 	realtime.dataset.disabled = 1;
 	if (!mute) {
-		music.stop();
+		fadeAudio();
 		audio.dataset.mute = 0;
 		hourChange = true;
 		mute = true;
@@ -81,9 +84,8 @@ function toggleMute() {
 			if (override) {
 				realtime.dataset.active = 1;
 			}
-		}, 1000)
+		}, 2000)
 	} else {
-		Tone.start();
 		audio.dataset.mute = 1;
 		mute = false;
 	}
@@ -97,57 +99,78 @@ function transitionSong() {
 	realtime.dataset.disabled = 1;
 	if (songActive) {
 		songActive = false;
-		music.stop();
+		fadeAudio();
 		setTimeout(() => {
 			songActive = true;
-			music = new Tone.Player('assets/audio/'+time+".mp3").toDestination();
-			music.loop = true;
-			music.fadeOut = '1s';
 			if (intros.includes(time)) {
-				intro = new Tone.Player('assets/audio/'+time+"-intro.mp3", startMusic).toDestination();
-				intro.autostart = true;
+				playIntro();
 			} else {
-				audio.dataset.active = 1;
-				overrides.dataset.active = 1;
-				if (override) {
-					realtime.dataset.disabled = 0;
-					realtime.dataset.active = 1;
-				}
-				music.autostart = true;
+				playLoop();
 			}
 		}, 2000)
 	} else {
 		songActive = true;
-		music = new Tone.Player('assets/audio/'+time+".mp3").toDestination();
-		music.loop = true;
-		music.fadeOut = '1s';
 		if (intros.includes(time)) {
-			intro = new Tone.Player('assets/audio/'+time+"-intro.mp3", startMusic).toDestination();
-			intro.autostart = true;
+			playIntro();
 		} else {
-			audio.dataset.active = 1;
-			overrides.dataset.active = 1;
-			if (override) {
-				realtime.dataset.disabled = 0;
-				realtime.dataset.active = 1;
-			}
-			music.autostart = true;
+			playLoop();
 		}
 	}
 }
 
-// For songs with intros
-function startMusic() {
-	setTimeout(() => {
-		audio.dataset.active = 1;
-		overrides.dataset.active = 1;
-		if (override) {
-			realtime.dataset.disabled = 0;
-			realtime.dataset.active = 1;
-		}
-		music.start();
-	}, intro.buffer.duration*1000)
+// Play music
+function playLoop() {
+	console.log('loop');
+	audioLoop.volume = 1;
+	audioLoop.src = `assets/audio/${time}.mp3`;
+	audioLoop.play();
+	audio.dataset.active = 1;
+	overrides.dataset.active = 1;
+	if (override) {
+		realtime.dataset.disabled = 0;
+		realtime.dataset.active = 1;
+	}
 }
+function playIntro() {
+	console.log('intro');
+	activeIntro = true;
+	audioIntro.src = `assets/audio/${time}-intro.mp3`;
+	audioIntro.play();
+	audioIntro.addEventListener('timeupdate', introTransition);
+}
+function introTransition() {
+	if (activeIntro) {
+		var buffer = 0.2;
+		if(audioIntro.currentTime > audioIntro.duration - buffer){
+			playLoop();
+			activeIntro = false;
+			audioIntro.removeEventListener('timeupdate', introTransition);
+		}
+	}
+}
+
+// Fade out and stop current loop
+function fadeAudio() {
+	let fade = setInterval(function () {
+		if (audioLoop.volume > 0) {
+			let temp = audioLoop.volume;
+			temp -= .1;
+			let newVolume = Math.round(temp * 10) / 10;
+			audioLoop.volume = newVolume;
+		}
+		if (audioLoop.volume <= 0) {
+			clearInterval(fade);
+			this.stop();
+		}
+	}, 200);
+}
+audioLoop.addEventListener('timeupdate', function () {
+	var buffer = 0.1;
+	if(this.currentTime > this.duration - buffer){
+		this.currentTime = 0
+		this.play()
+	}
+});
 
 // Override controls
 for (let toggle of overrides.querySelectorAll('div')) {
@@ -199,11 +222,11 @@ setActiveToggle();
 realtime.addEventListener('click', resetClock);
 function resetClock() {
 	realtime.dataset.active = 0;
+	overrides.dataset.active = 0;
 	audio.dataset.active = 0;
-	if (!mute) {
-		overrides.dataset.active = 0;
-	} else {
+	if (mute) {
 		setTimeout(() => {
+			overrides.dataset.active = 1;
 			audio.dataset.active = 1;
 		}, 1000)
 	}
