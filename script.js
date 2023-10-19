@@ -309,5 +309,5 @@ function unlock() {
     if (p) p.then(function(){console.log("play success")}, function(reason){console.log("play failed", reason)});
 }
 
-window.addEventListener("mousedown", unlock);
+// window.addEventListener("mousedown", unlock);
 window.addEventListener("click", unlock);
