@@ -1,6 +1,9 @@
 @font-face {
 	font-family: "Limkin";
-	src: url('assets/fonts/limkin.ttf');
+	src: url("https://toomuchtype.com/fonts/limkin/variable/TMT-LimkinVF.ttf") format(truetype),
+		 url("https://toomuchtype.com/fonts/limkin/variable/TMT-LimkinVF.woff") format(woff),
+		 url("https://toomuchtype.com/fonts/limkin/variable/TMT-LimkinVF.woff2") format(woff2);
+	font-weight: 100 900;
 }
 * {
 	box-sizing: border-box;
@@ -33,6 +36,8 @@
 	--9pm: #3e187e;
 	--10pm: #2c146e;
 	--11pm: #101857;
+	--white: white;
+	--black: black;
 }
 body[data-time="12am"] {
 	--primary: var(--12am);
@@ -57,54 +62,67 @@ body[data-time="4am"] {
 body[data-time="5am"] {
 	--primary: var(--5am);
 	--secondary: var(--6am);
+	--white: #eee;
 }
 body[data-time="6am"] {
 	--primary: var(--6am);
 	--secondary: var(--7am);
+	--white: #ddd;
 }
 body[data-time="7am"] {
 	--primary: var(--7am);
 	--secondary: var(--8am);
+	--white: #ccc;
 }
 body[data-time="8am"] {
 	--primary: var(--8am);
 	--secondary: var(--9am);
+	--white: #bbb;
 }
 body[data-time="9am"] {
 	--primary: var(--9am);
 	--secondary: var(--10am);
+	--white: #aaa;
 }
 body[data-time="10am"] {
 	--primary: var(--10am);
 	--secondary: var(--11am);
+	--white: #999;
 }
 body[data-time="11am"] {
 	--primary: var(--11am);
 	--secondary: var(--12pm);
+	--white: #888;
 }
 body[data-time="12pm"] {
 	--primary: var(--12pm);
 	--secondary: var(--1pm);
+	--white: #999;
 }
 body[data-time="1pm"] {
 	--primary: var(--1pm);
 	--secondary: var(--2pm);
+	--white: #aaa;
 }
 body[data-time="2pm"] {
 	--primary: var(--2pm);
 	--secondary: var(--3pm);
+	--white: #bbb;
 }
 body[data-time="3pm"] {
 	--primary: var(--3pm);
 	--secondary: var(--4pm);
+	--white: #ccc;
 }
 body[data-time="4pm"] {
 	--primary: var(--4pm);
 	--secondary: var(--5pm);
+	--white: #ddd;
 }
 body[data-time="5pm"] {
 	--primary: var(--5pm);
 	--secondary: var(--6pm);
+	--white: #eee;
 }
 body[data-time="6pm"] {
 	--primary: var(--6pm);
@@ -169,12 +187,12 @@ body[data-active="0"] {
 	justify-content: center;
 	flex-direction: column;
 	text-align: center;
-	color: white;
+	color: var(--white);
 	font-family: 'Limkin', sans-serif;
 	font-variation-settings: "wght" 100, "SRFF" 0;
 	cursor: pointer;
 	padding: 5vmin 5vmin calc(6vmin + 20px) 5vmin;
-	transition: opacity 1s, transform 1s, filter 1s;
+	transition: opacity 1s, transform 1s, filter 1s, color 1s;
 }
 @keyframes handshake-in {
 	from {
@@ -187,8 +205,8 @@ body[data-active="0"] {
 	}
 }
 #handshake h1 {
-	font-size: 12vmin;
-	text-shadow: 0 0 10px rgba(0,0,0,.2);
+	font-size: max(12vmin, 48px);
+	letter-spacing: -0.08em;
 	transition: filter .5s;
 	animation: handshake-in 1s forwards cubic-bezier(0.33, 1, 0.68, 1);
 }
@@ -196,9 +214,9 @@ body[data-active="0"] {
 	filter: blur(5px);
 }
 #handshake p {
-	font-size: 3vmin;
-	font-variation-settings: "wght" 300, "SRFF" 0;
-	text-shadow: 0 0 20px rgba(0,0,0,.4);
+	font-size: max(3vmin, 18px);
+	font-variation-settings: "wght" 200, "SRFF" 0;
+	letter-spacing: -0.02em;
 	transition: filter .5s;
 	animation: handshake-in 1s forwards cubic-bezier(0.33, 1, 0.68, 1);
 }
@@ -212,52 +230,16 @@ body[data-active="0"] {
 	pointer-events: none;
 }
 
-/* Audio controls */
-.audio {
-	position: absolute;
-	top: 20px;
-	right: 15px;
-	width: 40px;
-	fill: white;
-	cursor: pointer;
-	z-index: 99;
-	transition: .2s;
-	filter: drop-shadow(0 0 10px rgba(0,0,0,.3));
-}
-.audio[data-active="0"] {
-	opacity: .25;
-	pointer-events: none;
-}
-.audio[data-hide="1"] {
-	opacity: 0;
-}
-.audio svg {
-	width: 100%;
-}
-.audio:hover {
-	opacity: .5;
-}
-.audio:active {
-	opacity: .25;
-}
-.audio[data-mute="0"] #unmute {
-	display: none;
-}
-.audio[data-mute="1"] #mute {
-	display: none;
-}
-
 /* Return to realtime */
 .realtime {
 	position: absolute;
-	top: 60px;
+	top: 15px;
 	right: 15px;
 	width: 40px;
-	fill: white;
+	fill: var(--white);
 	cursor: pointer;
 	z-index: 99;
-	transition: .2s;
-	filter: drop-shadow(0 0 10px rgba(0,0,0,.15));
+	transition: opacity .2s, fill 1s;
 }
 .realtime svg {
 	width: 100%;
@@ -305,8 +287,8 @@ body[data-active="0"] {
     width: 80vmin;
     height: 80vmin;
     position: relative;
-	box-shadow: 0 0 100px rgba(0,0,0,.2);
-	background: radial-gradient(transparent 60%, rgba(255,255,255,.5) 75%);
+	box-shadow: inset 0 0 100px var(--white), 0 20px 40px rgba(0,0,0,.02);
+	transition: box-shadow 1s;
 }
 .clock[data-active="0"] .hand {
 	opacity: 0;
@@ -314,15 +296,14 @@ body[data-active="0"] {
 .hand {
     width: 50%;
     right: 50%;
-    height: 2px;
-    background-color: white;
-	box-shadow: 0 0 10px rgba(0,0,0,.2);
+    height: 1.5px;
+    background-color: var(--white);
 	border-radius: 2px;
     position: absolute;
     top: 50%;
     transform-origin: 100%;
     transform: rotate(90deg);
-	transition: opacity .5s;
+	transition: opacity .5s, background-color 1s;
 }
 .hand.hour-hand {
     width: 20%;
@@ -344,8 +325,9 @@ body[data-active="0"] {
 	transform: translate(-50%, -50%);
 	font-family: "Limkin", sans-serif;
 	font-variation-settings: "wght" 100, "SRFF" 0;
-	font-size: 25vmin;
-	color: white;
+	font-size: max(12vmin, 48px);
+	letter-spacing: -0.08em;
+	color: var(--white);
 	width: 100%;
 	height: 100%;
 	display: flex;
@@ -355,8 +337,7 @@ body[data-active="0"] {
 	z-index: 99;
 	opacity: 0;
 	pointer-events: none;
-	transition: opacity .5s;
-	text-shadow: 0 0 10px rgba(0,0,0,.2);
+	transition: opacity .5s, color 1s;
 }
 .digital[data-active="1"] {
 	opacity: 1;
@@ -371,14 +352,14 @@ body[data-active="0"] {
 	display: flex;
 	align-items: end;
 	height: 20px;
-	transition: opacity 1s, height 1s, width 1s;
-	box-shadow: 0 0 10px rgba(0,0,0,.1);
+	transition: opacity 1s, height 1s, width 1s, box-shadow 1s;
+	box-shadow: 0 -10px 200px var(--white);
 }
 .overrides:hover {
 	height: 40px;
 }
 .overrides[data-active="0"] {
-	height: 10px;
+	height: 0;
 	opacity: .2;
 	pointer-events: none;
 }
@@ -387,7 +368,6 @@ body[data-active="0"] {
 	height: 100%;
 	transition: height .2s, width .2s, flex-grow 1s;
 	cursor: pointer;
-	box-shadow: 0 40px 50px rgba(0,0,0,.5);
 }
 .overrides div[data-active="1"] {
 	flex-grow: 4;
@@ -489,6 +469,7 @@ body[data-active="0"] {
 		width: 20px;
 		flex-direction: column;
 		align-items: start;
+		box-shadow: 10px 0 200px var(--white);
 	}
 	.overrides:hover {
 		width: 40px;
@@ -496,7 +477,7 @@ body[data-active="0"] {
 	}
 	.overrides[data-active="0"] {
 		height: unset;
-		width: 10px;
+		width: 0;
 	}
 	.overrides div {
 		width: 100%;

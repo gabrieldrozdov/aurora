@@ -4,11 +4,9 @@ const secondHand = document.querySelector(".second-hand");
 const minsHand = document.querySelector(".min-hand");
 const hourHand = document.querySelector(".hour-hand");
 const digital = document.querySelector('.digital');
-const audio = document.querySelector('.audio');
 const realtime = document.querySelector('.realtime');
 const overrides = document.querySelector('.overrides');
 const favicon = document.querySelector("link[rel~='icon']");
-const audioIntro = document.querySelector("#intro");
 const audioLoop = document.querySelector("#loop");
 
 /* Clock */
@@ -21,13 +19,12 @@ if (Math.random() < .5) {
 	time = time+"pm";
 }
 body.dataset.time = time;
-let intros = ['9am','12pm','3pm','5pm','10pm'];
-let music, intro;
-let mute = true;
+let music;
 let override = false;
+let firsttime = true;
 function setTime() {
 	favicon.href = "./assets/meta/" + time + ".png";
-	if (hourChange && !mute) {
+	if (hourChange && intro == false) {
 		hourChange = false;
 		transitionSong();
 	}
@@ -61,117 +58,72 @@ function setTime() {
 		time = realHour + midday;
 		body.dataset.time = time;
 		setActiveToggle();
+		forceChange = false;
 	}
 }
 setInterval(setTime, 1000);
-
-// Mute controls
-audio.addEventListener('click', toggleMute);
-function toggleMute() {
-	audio.dataset.active = 0;
-	overrides.dataset.active = 0;
-	realtime.dataset.disabled = 1;
-	if (!mute) {
-		fadeAudio();
-		audio.dataset.mute = 0;
-		hourChange = true;
-		mute = true;
-		setTimeout(() => {
-			audio.dataset.active = 1;
-			overrides.dataset.active = 1;
-			realtime.dataset.disabled = 0;
-			if (override) {
-				realtime.dataset.active = 1;
-			}
-		}, 2000)
-	} else {
-		audio.dataset.mute = 1;
-		mute = false;
-	}
-}
+setTimeout(setTime, 50);
 
 // Transition between tracks (or start first track)
 function transitionSong() {
 	hideTime();
 	setActiveToggle();
-	audio.dataset.active = 0;
 	overrides.dataset.active = 0;
 	realtime.dataset.disabled = 1;
 	if (songActive) {
-		songActive = false;
-		fadeAudio();
-		setTimeout(() => {
-			songActive = true;
-			if (intros.includes(time)) {
-				playIntro();
-			} else {
+		if (window.innerWidth > 600) {
+			songActive = false;
+			fadeAudio();
+			setTimeout(() => {
+				songActive = true;
 				loaded = false;
 				playLoop();
-			}
-		}, 2100)
-	} else {
-		songActive = true;
-		if (intros.includes(time)) {
-			playIntro();
+			}, 2100)
 		} else {
 			loaded = false;
 			playLoop();
 		}
+	} else {
+		songActive = true;
+		loaded = false;
+		playLoop();
 	}
 }
 
 // Play music
 let loaded = false;
 function playLoop() {
-	console.log('loop');
 	audioLoop.volume = 1;
 
 	if (!loaded) {
 		audioLoop.src = `assets/audio/${time}.mp3`;
 	}
 	audioLoop.play();
-	audio.dataset.active = 1;
 	overrides.dataset.active = 1;
 	if (override) {
 		realtime.dataset.disabled = 0;
 		realtime.dataset.active = 1;
 	}
 }
-function playIntro() {
-	console.log('intro');
-	activeIntro = true;
-	audioIntro.src = `assets/audio/${time}-intro.mp3`;
-	audioLoop.src = `assets/audio/${time}.mp3`;
-	loaded = true;
-	audioIntro.play();
-	audioIntro.addEventListener('timeupdate', introTransition);
-}
-function introTransition() {
-	if (activeIntro) {
-		var buffer = .44;
-		if(audioIntro.currentTime > audioIntro.duration - buffer){
-			playLoop();
-			activeIntro = false;
-			audioIntro.removeEventListener('timeupdate', introTransition);
-		}
-	}
-}
 
 // Fade out and stop current loop
 function fadeAudio() {
-	console.log('fade');
-	let fade = setInterval(function () {
-		if (audioLoop.volume > 0) {
-			let temp = audioLoop.volume;
-			temp -= .1;
-			let newVolume = Math.round(temp * 10) / 10;
-			audioLoop.volume = newVolume;
-		}
-		if (audioLoop.volume <= 0) {
-			clearInterval(fade);
-			this.stop();
-		}
-	}, 200);
+	if (window.innerWidth > 600) {
+		let fade = setInterval(function () {
+			if (audioLoop.volume > 0) {
+				let temp = audioLoop.volume;
+				temp -= .1;
+				let newVolume = Math.round(temp * 10) / 10;
+				audioLoop.volume = newVolume;
+			}
+			if (audioLoop.volume <= 0) {
+				clearInterval(fade);
+				this.stop();
+			}
+		}, 200);
+	} else {
+		this.stop();
+	}
 }
 audioLoop.addEventListener('timeupdate', function () {
 	var buffer = .44;
@@ -200,7 +152,7 @@ function changeTrack(newTime) {
 	realtime.dataset.active = 1;
 	time = newTime;
 	body.dataset.time = time;
-	if (songActive && !mute) {
+	if (songActive) {
 		transitionSong();
 	}
 }
@@ -232,50 +184,18 @@ realtime.addEventListener('click', resetClock);
 function resetClock() {
 	realtime.dataset.active = 0;
 	overrides.dataset.active = 0;
-	audio.dataset.active = 0;
-	if (mute) {
-		setTimeout(() => {
-			overrides.dataset.active = 1;
-			audio.dataset.active = 1;
-		}, 1000)
-	}
 	override = false;
 }
 
-// Prevent phone from falling asleep with wake lock API
-// let wakeLock = null;
-// const requestWakeLock = async () => {
-// 	try {
-// 		wakeLock = await navigator.wakeLock.request();
-// 		wakeLock.addEventListener('release', () => {
-// 			console.log('Screen Wake Lock released:', wakeLock.released);
-// 		});
-// 		console.log('Screen Wake Lock released:', wakeLock.released);
-// 	} catch (err) {
-// 		console.error(`${err.name}, ${err.message}`);
-// 	}
-// };
-// requestWakeLock();
-
-// // Detect if tab is navigated away from
-// document.addEventListener("visibilitychange", (event) => {
-// 	if (document.visibilityState == "visible") {
-// 		requestWakeLock();
-// 	} else {
-// 		wakeLock.release();
-// 		wakeLock = null;
-// 	}
-// });
-
 // Intro handshake
+let intro = true;
 const handshake = document.querySelector("#handshake");
-const dummy = document.querySelector("#dummy");
 function initialize() {
-	dummy.play();
-	toggleMute();
-	audio.dataset.hide = 0;
+	intro = false;
+	hourChange = false;
 	handshake.dataset.active = 0;
 	clock.dataset.active = 1;
-	// overrides.dataset.active = 1;
+	overrides.dataset.active = 1;
+	transitionSong();
 }
 handshake.addEventListener('click', initialize);
